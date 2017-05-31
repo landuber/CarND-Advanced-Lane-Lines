@@ -272,10 +272,14 @@ def lane_lines(binary_warped, image, undist, Minv):
     left_curverad = ((1 + (2*left_fit_cr[0]*y_eval*ym_per_pix + left_fit_cr[1])**2)**1.5) / np.absolute(2*left_fit_cr[0])
     right_curverad = ((1 + (2*right_fit_cr[0]*y_eval*ym_per_pix + right_fit_cr[1])**2)**1.5) / np.absolute(2*right_fit_cr[0])
 
+    # Calculate the drift off the center of the lane
+    drift = (midpoint - (leftx_base + rightx_base) / 2.) * xm_per_pix
+
     return {'left_fit': left_fit, 
             'right_fit': right_fit,
             'left_fitx': left_fitx,
             'right_fitx': right_fitx,
             'left_curverad': left_curverad,
             'right_curverad': right_curverad,
+            'drift': drift,
             'out_img':  result }

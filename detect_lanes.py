@@ -18,9 +18,20 @@ def transform(image):
     lane_obj = lane_lines(binary_warped, image, undist, inv(M))
     left_fit = lane_obj['left_fit']
     right_fit = lane_obj['right_fit']
+    left_curverad = lane_obj['left_curverad']
+    right_curverad = lane_obj['right_curverad']
+    curverad = (left_curverad + right_curverad) / 2
+    drift = lane_obj['drift']
     out_img = lane_obj['out_img']
+    font = cv2.FONT_HERSHEY_SIMPLEX
+    cv2.putText(out_img,'Radius of Curvature = ' + str(int(curverad)) + '(m)',(0,130), font, 1, (200,255,155), 2, cv2.LINE_AA)
+    if drift > 0:
+        pos = 'left'
+    else:
+        pos = 'right'
+    cv2.putText(out_img,'Vehicle is ' + str.format('{0:.3f}', abs(drift)) + 'm ' + pos + ' of center',(0,230), font, 1, (200,255,155), 2, cv2.LINE_AA)
     return out_img
 
-clip = VideoFileClip('project_video.mp4')#.subclip(0, 15)
+clip = VideoFileClip('project_video.mp4')
 newclip = clip.fl(lambda gf, t: transform(gf(t)))
 newclip.write_videofile("final_video.mp4")
